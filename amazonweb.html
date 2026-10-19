@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FraudShield Web - AI Return Verification Portal</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar-brand { font-weight: 700; color: #ff9900 !important; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        #videoElement { width: 100%; max-height: 280px; background-color: #000; border-radius: 8px; object-fit: cover; }
+        .risk-badge { font-size: 1.5rem; font-weight: bold; }
+        .status-blocked { color: #dc3545; }
+        .status-passed { color: #198754; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <nav class="navbar navbar-dark bg-dark px-4 mb-4">
+        <a class="navbar-brand" href="#">🛡️ FraudShield Web</a>
+        <span class="navbar-text text-white small">Amazon Hackathon Working Prototype</span>
+    </nav>
+
+    <div class="container mb-5">
+        <div class="row g-4">
+            
+            <!-- Module 1: Customer Doorstep Return Portal -->
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <h5 class="card-title text-primary mb-3">1. Customer Return Scanning Portal</h5>
+                    <p class="text-muted small">Capture live product condition and scan serial numbers before initiating return pickup.</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold">Order ID</label>
+                        <input type="text" class="form-control" id="orderId" value="ORD-AMZ-2026-8891" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold">Product Serial Number / Barcode</label>
+                        <input type="text" class="form-control" id="barcode" placeholder="Scanning barcode..." value="SN-99201-XYZ">
+                    </div>
+
+                    <!-- Live WebRTC Camera Stream -->
+                    <div class="mb-3 text-center">
+                        <video id="videoElement" autoplay playsinline></video>
+                        <button class="btn btn-outline-primary btn-sm mt-2" onclick="startCamera()">📷 Enable Live Camera</button>
+                    </div>
+
+                    <button class="btn btn-warning w-100 font-weight-bold" onclick="analyzeReturn()">Submit Return & Run AI Analysis</button>
+                </div>
+            </div>
+
+            <!-- Module 2: Admin AI Inspection Dashboard -->
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <h5 class="card-title text-danger mb-3">2. Real-Time Fraud Inspection Panel</h5>
+                    <p class="text-muted small">AI-powered computer vision assessment and doorstep risk calculation.</p>
+
+                    <div id="resultsPanel" style="display: none;">
+                        <div class="alert alert-secondary text-center">
+                            <span class="d-block text-muted small">Calculated Fraud Risk Score</span>
+                            <span id="riskScore" class="risk-badge status-blocked">85% HIGH RISK</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="fw-bold">Automated Verification Checks:</h6>
+                            <ul class="list-group list-group-flush small">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Serial Number Match
+                                    <span class="badge bg-success">Passed</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Product Visual Condition
+                                    <span class="badge bg-danger">Damage / Mismatch Detected</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    User Return History
+                                    <span class="badge bg-warning text-dark">High Return Frequency</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="alert alert-danger mb-0 text-center" role="alert">
+                            <strong>System Action:</strong> Return Auto-Flagged. Doorstep Pickup Cancelled.
+                        </div>
+                    </div>
+
+                    <div id="placeholderText" class="text-center text-muted py-5">
+                        <p class="mb-0">Click "Submit Return & Run AI Analysis" to trigger automated doorstep validation.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Start Live WebRTC Camera Stream
+        function startCamera() {
+            const video = document.getElementById('videoElement');
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function (stream) {
+                        video.srcObject = stream;
+                    })
+                    .catch(function (error) {
+                        alert("Camera access denied or device camera unavailable.");
+                    });
+            } else {
+                alert("Your browser does not support WebRTC live camera streaming.");
+            }
+        }
+
+        // Trigger Simulated AI Analysis
+        function analyzeReturn() {
+            document.getElementById('placeholderText').style.display = 'none';
+            document.getElementById('resultsPanel').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
